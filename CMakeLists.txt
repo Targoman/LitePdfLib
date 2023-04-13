@@ -1,0 +1,513 @@
+cmake_minimum_required(VERSION 3.16)
+project(LitePdfLib)
+
+# Setup the Targoman CMake build system
+include(./3rdParty/TargomanCMake/targoman.cmake)
+tg_setup_buildsystem_paths()
+
+# Global compiler settings
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_CXX_F)
+
+# DRM library
+tg_add_library(fdrm
+    STATIC
+    libsrc/core/src/fdrm/crypto/fx_crypt.cpp
+    libsrc/core/src/fdrm/crypto/fx_crypt_aes.cpp
+    libsrc/core/src/fdrm/crypto/fx_crypt_sha.cpp
+)
+tg_add_library_headers(fdrm
+    PUBLIC_HEADER
+    libsrc/core/include/fdrm/fx_crypt.h
+)
+
+# XGE library
+tg_add_library(fxge
+    STATIC
+    libsrc/core/src/fxge/agg/src/fxfx_agg_curves.cpp
+    libsrc/core/src/fxge/agg/src/fxfx_agg_driver.cpp
+    libsrc/core/src/fxge/agg/src/fxfx_agg_path_storage.cpp
+    libsrc/core/src/fxge/agg/src/fxfx_agg_rasterizer_scanline_aa.cpp
+    libsrc/core/src/fxge/agg/src/fxfx_agg_vcgen_dash.cpp
+    libsrc/core/src/fxge/agg/src/fxfx_agg_vcgen_stroke.cpp
+    libsrc/core/src/fxge/android/fpf_skiafont.cpp
+    libsrc/core/src/fxge/android/fpf_skiafontmgr.cpp
+    libsrc/core/src/fxge/android/fpf_skiamodule.cpp
+    libsrc/core/src/fxge/android/fx_android_font.cpp
+    libsrc/core/src/fxge/android/fx_android_imp.cpp
+    libsrc/core/src/fxge/apple/fx_apple_platform.cpp
+    libsrc/core/src/fxge/apple/fx_mac_imp.cpp
+    libsrc/core/src/fxge/apple/fx_quartz_device.cpp
+    libsrc/core/src/fxge/dib/fx_dib_composite.cpp
+    libsrc/core/src/fxge/dib/fx_dib_convert.cpp
+    libsrc/core/src/fxge/dib/fx_dib_engine.cpp
+    libsrc/core/src/fxge/dib/fx_dib_main.cpp
+    libsrc/core/src/fxge/dib/fx_dib_transform.cpp
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitDingbats.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitFixed.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitFixedBold.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitFixedBoldItalic.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitFixedItalic.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSans.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSansBold.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSansBoldItalic.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSansItalic.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSansMM.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSerif.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSerifBold.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSerifBoldItalic.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSerifItalic.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSerifMM.c
+    libsrc/core/src/fxge/fontdata/chromefontdata/FoxitSymbol.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_cff.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_ftbase.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_ftbitmap.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_ftglyph.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_ftinit.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_ftlcdfil.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_ftmm.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_ftsystem.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_psaux.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_pshinter.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_psmodule.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_raster.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_sfnt.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_smooth.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_truetype.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_type1.c
+    libsrc/core/src/fxge/fx_freetype/src/fxft_type1cid.c
+    libsrc/core/src/fxge/ge/fx_ge.cpp
+    libsrc/core/src/fxge/ge/fx_ge_device.cpp
+    libsrc/core/src/fxge/ge/fx_ge_font.cpp
+    libsrc/core/src/fxge/ge/fx_ge_fontmap.cpp
+    libsrc/core/src/fxge/ge/fx_ge_linux.cpp
+    libsrc/core/src/fxge/ge/fx_ge_path.cpp
+    libsrc/core/src/fxge/ge/fx_ge_ps.cpp
+    libsrc/core/src/fxge/ge/fx_ge_text.cpp
+)
+tg_add_library_headers(fxge
+    PUBLIC_HEADER
+    libsrc/core/include/fxge/fpf.h
+    libsrc/core/include/fxge/fx_dib.h
+    libsrc/core/include/fxge/fx_font.h
+    libsrc/core/include/fxge/fx_freetype.h
+    libsrc/core/include/fxge/fx_ge.h
+    libsrc/core/include/fxge/fx_ge_apple.h
+    libsrc/core/include/fxge/fx_ge_win32.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_basics.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_clip_liang_barsky.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_conv_dash.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_conv_stroke.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_curves.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_path_storage.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_rasterizer_scanline_aa.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_renderer_scanline.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_rendering_buffer.h
+    libsrc/core/src/fxge/agg/include/fxfx_agg_scanline_u.h
+    libsrc/core/src/fxge/agg/include/fx_agg_driver.h
+    libsrc/core/src/fxge/android/fpf_skiafont.h
+    libsrc/core/src/fxge/android/fpf_skiafontmgr.h
+    libsrc/core/src/fxge/android/fpf_skiamodule.h
+    libsrc/core/src/fxge/android/fx_android_font.h
+    libsrc/core/src/fxge/android/fx_fpf.h
+    libsrc/core/src/fxge/apple/apple_int.h
+    libsrc/core/src/fxge/dib/dib_int.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_cffobjs.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_cfftypes.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_freetype.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_ft2build.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_ftmm.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_ftobjs.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_ftotval.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_ftoutln.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_ftstream.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_tttables.h
+    libsrc/core/src/fxge/fx_freetype/include/fxft_tttypes.h
+    libsrc/core/src/fxge/ge/text_int.h
+)
+
+# CRT library
+tg_add_library(fxcrt
+    STATIC
+    libsrc/core/src/fxcrt/fxcrt_platforms.cpp
+    libsrc/core/src/fxcrt/fxcrt_posix.cpp
+    libsrc/core/src/fxcrt/fxcrt_windows.cpp
+    libsrc/core/src/fxcrt/fx_arabic.cpp
+    libsrc/core/src/fxcrt/fx_basic_array.cpp
+    libsrc/core/src/fxcrt/fx_basic_bstring.cpp
+    libsrc/core/src/fxcrt/fx_basic_buffer.cpp
+    libsrc/core/src/fxcrt/fx_basic_coords.cpp
+    libsrc/core/src/fxcrt/fx_basic_gcc.cpp
+    libsrc/core/src/fxcrt/fx_basic_list.cpp
+    libsrc/core/src/fxcrt/fx_basic_maps.cpp
+    libsrc/core/src/fxcrt/fx_basic_memmgr.cpp
+    libsrc/core/src/fxcrt/fx_basic_plex.cpp
+    libsrc/core/src/fxcrt/fx_basic_utf.cpp
+    libsrc/core/src/fxcrt/fx_basic_util.cpp
+    libsrc/core/src/fxcrt/fx_basic_wstring.cpp
+    libsrc/core/src/fxcrt/fx_extension.cpp
+    libsrc/core/src/fxcrt/fx_ucddata.cpp
+    libsrc/core/src/fxcrt/fx_unicode.cpp
+    libsrc/core/src/fxcrt/fx_xml_composer.cpp
+    libsrc/core/src/fxcrt/fx_xml_parser.cpp
+)
+tg_add_library_headers(fxcrt
+    PUBLIC_HEADER
+    libsrc/core/include/fxcrt/fx_arb.h
+    libsrc/core/include/fxcrt/fx_basic.h
+    libsrc/core/include/fxcrt/fx_coordinates.h
+    libsrc/core/include/fxcrt/fx_ext.h
+    libsrc/core/include/fxcrt/fx_memory.h
+    libsrc/core/include/fxcrt/fx_stream.h
+    libsrc/core/include/fxcrt/fx_string.h
+    libsrc/core/include/fxcrt/fx_system.h
+    libsrc/core/include/fxcrt/fx_ucd.h
+    libsrc/core/include/fxcrt/fx_xml.h
+    libsrc/core/src/fxcrt/extension.h
+    libsrc/core/src/fxcrt/fxcrt_platforms.h
+    libsrc/core/src/fxcrt/fxcrt_posix.h
+    libsrc/core/src/fxcrt/fxcrt_windows.h
+    libsrc/core/src/fxcrt/fx_arabic.h
+    libsrc/core/src/fxcrt/plex.h
+    libsrc/core/src/fxcrt/xml_int.h
+)
+
+# XCODEC library
+tg_add_library(fxcodec
+    STATIC
+    libsrc/core/src/fxcodec/codec/fx_codec.cpp
+    libsrc/core/src/fxcodec/codec/fx_codec_fax.cpp
+    libsrc/core/src/fxcodec/codec/fx_codec_flate.cpp
+    libsrc/core/src/fxcodec/codec/fx_codec_icc.cpp
+    libsrc/core/src/fxcodec/codec/fx_codec_jbig.cpp
+    libsrc/core/src/fxcodec/codec/fx_codec_jbig_enc.cpp
+    libsrc/core/src/fxcodec/codec/fx_codec_jpeg.cpp
+    libsrc/core/src/fxcodec/codec/fx_codec_jpx_opj.cpp
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_bio.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_cio.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_dwt.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_event.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_function_list.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_image.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_invert.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_j2k.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_j2k_lib.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_jpt.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_mct.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_mqc.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_openjpeg.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_openjpeg_jp2.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_opj_clock.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_pi.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_raw.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_t1.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_t1_generate_luts.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_t2.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_tcd.c
+    libsrc/core/src/fxcodec/fx_libopenjpeg/src/fx_tgt.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_adler32.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_compress.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_crc32.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_deflate.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_gzclose.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_gzlib.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_gzread.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_gzwrite.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_infback.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_inffast.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_inflate.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_inftrees.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_trees.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_uncompr.c
+    libsrc/core/src/fxcodec/fx_zlib/src/fx_zlib_zutil.c
+    libsrc/core/src/fxcodec/jbig2/JBig2_ArithIntDecoder.cpp
+    libsrc/core/src/fxcodec/jbig2/JBig2_Context.cpp
+    libsrc/core/src/fxcodec/jbig2/JBig2_GeneralDecoder.cpp
+    libsrc/core/src/fxcodec/jbig2/JBig2_HuffmanDecoder.cpp
+    libsrc/core/src/fxcodec/jbig2/JBig2_HuffmanTable.cpp
+    libsrc/core/src/fxcodec/jbig2/JBig2_Image.cpp
+    libsrc/core/src/fxcodec/jbig2/JBig2_Object.cpp
+    libsrc/core/src/fxcodec/jbig2/JBig2_PatternDict.cpp
+    libsrc/core/src/fxcodec/jbig2/JBig2_Segment.cpp
+    libsrc/core/src/fxcodec/jbig2/JBig2_SymbolDict.cpp
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmscam02.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmscgats.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmscnvrt.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmserr.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsgamma.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsgmt.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmshalf.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsintrp.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsio0.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsio1.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmslut.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsmd5.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsmtrx.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsnamed.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsopt.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmspack.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmspcs.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsplugin.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsps2.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmssamp.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmssm.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmstypes.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsvirt.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmswtpnt.c
+    libsrc/core/src/fxcodec/lcms2/src/fx_cmsxform.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcapimin.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcapistd.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jccoefct.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jccolor.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcdctmgr.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jchuff.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcinit.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcmainct.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcmarker.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcmaster.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcomapi.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcparam.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcphuff.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcprepct.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jcsample.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jctrans.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdapimin.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdapistd.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdcoefct.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdcolor.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jddctmgr.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdhuff.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdinput.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdmainct.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdmarker.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdmaster.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdmerge.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdphuff.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdpostct.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdsample.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jdtrans.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jerror.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jfdctfst.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jfdctint.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jidctfst.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jidctint.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jidctred.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jmemmgr.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jmemnobs.c
+    libsrc/core/src/fxcodec/libjpeg/fpdfapi_jutils.c
+)
+tg_add_library_headers(fxcodec
+    PUBLIC_HEADER
+    libsrc/core/include/fxcodec/fx_codec.h
+    libsrc/core/include/fxcodec/fx_codec_def.h
+    libsrc/core/include/fxcodec/fx_codec_provider.h
+    libsrc/core/src/fxcodec/codec/codec_int.h
+    libsrc/core/src/fxcodec/fx_libopenjpeg/include/fx_openjpeg.h
+    libsrc/core/src/fxcodec/fx_zlib/include/fx_zlib.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_ArithDecoder.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_ArithIntDecoder.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_ArithQe.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_BitStream.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_Context.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_Define.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_GeneralDecoder.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_HuffmanDecoder.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_HuffmanTable.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_HuffmanTable_Standard.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_Image.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_List.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_Module.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_Object.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_Page.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_PatternDict.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_Segment.h
+    libsrc/core/src/fxcodec/jbig2/JBig2_SymbolDict.h
+    libsrc/core/src/fxcodec/libjpeg/cderror.h
+    libsrc/core/src/fxcodec/libjpeg/cdjpeg.h
+    libsrc/core/src/fxcodec/libjpeg/jchuff.h
+    libsrc/core/src/fxcodec/libjpeg/jconfig.h
+    libsrc/core/src/fxcodec/libjpeg/jdct.h
+    libsrc/core/src/fxcodec/libjpeg/jdhuff.h
+    libsrc/core/src/fxcodec/libjpeg/jerror.h
+    libsrc/core/src/fxcodec/libjpeg/jinclude.h
+    libsrc/core/src/fxcodec/libjpeg/jmemsys.h
+    libsrc/core/src/fxcodec/libjpeg/jmorecfg.h
+    libsrc/core/src/fxcodec/libjpeg/jpegint.h
+    libsrc/core/src/fxcodec/libjpeg/jpeglib.h
+    libsrc/core/src/fxcodec/libjpeg/jversion.h
+    libsrc/core/src/fxcodec/libjpeg/transupp.h
+)
+
+# PDFDoc library
+tg_add_library(fpdfdoc
+    STATIC
+    libsrc/core/src/fpdfdoc/doc_action.cpp
+    libsrc/core/src/fpdfdoc/doc_annot.cpp
+    libsrc/core/src/fpdfdoc/doc_ap.cpp
+    libsrc/core/src/fpdfdoc/doc_basic.cpp
+    libsrc/core/src/fpdfdoc/doc_bookmark.cpp
+    libsrc/core/src/fpdfdoc/doc_form.cpp
+    libsrc/core/src/fpdfdoc/doc_formcontrol.cpp
+    libsrc/core/src/fpdfdoc/doc_formfield.cpp
+    libsrc/core/src/fpdfdoc/doc_link.cpp
+    libsrc/core/src/fpdfdoc/doc_metadata.cpp
+    libsrc/core/src/fpdfdoc/doc_ocg.cpp
+    libsrc/core/src/fpdfdoc/doc_tagged.cpp
+    libsrc/core/src/fpdfdoc/doc_utils.cpp
+    libsrc/core/src/fpdfdoc/doc_viewerPreferences.cpp
+    libsrc/core/src/fpdfdoc/doc_vt.cpp
+    libsrc/core/src/fpdfdoc/doc_vtmodule.cpp
+)
+tg_add_library_headers(fpdfdoc
+    PUBLIC_HEADER
+    libsrc/core/include/fpdfdoc/fpdf_ap.h
+    libsrc/core/include/fpdfdoc/fpdf_doc.h
+    libsrc/core/include/fpdfdoc/fpdf_tagged.h
+    libsrc/core/include/fpdfdoc/fpdf_vt.h
+    libsrc/core/src/fpdfdoc/pdf_vt.h
+    libsrc/core/src/fpdfdoc/tagged_int.h
+)
+
+# PDFText library
+tg_add_library(fpdftext
+    STATIC
+    libsrc/core/src/fpdftext/fpdf_text.cpp
+    libsrc/core/src/fpdftext/fpdf_text_int.cpp
+    libsrc/core/src/fpdftext/fpdf_text_search.cpp
+    libsrc/core/src/fpdftext/unicodenormalization.cpp
+    libsrc/core/src/fpdftext/unicodenormalizationdata.cpp
+)
+tg_add_library_headers(fpdftext
+    PUBLIC_HEADER
+    libsrc/core/include/fpdftext/fpdf_text.h
+    libsrc/core/src/fpdftext/text_int.h
+    libsrc/core/src/fpdftext/txtproc.h
+)
+
+# PDFAPI library
+tg_add_library(fpdfapi
+    STATIC
+    libsrc/core/src/fpdfapi/fpdf_basic_module.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/Adobe-CNS1-UCS2_5.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/B5pc-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/B5pc-V_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/cmaps_cns1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/CNS-EUC-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/CNS-EUC-V_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/ETen-B5-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/ETen-B5-V_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/ETenms-B5-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/ETenms-B5-V_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/HKscs-B5-H_5.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/HKscs-B5-V_5.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/UniCNS-UCS2-H_3.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/UniCNS-UCS2-V_3.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/CNS1/UniCNS-UTF16-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/fpdf_cmaps.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/Adobe-GB1-UCS2_5.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/cmaps_gb1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GB-EUC-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GB-EUC-V_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GBK-EUC-H_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GBK-EUC-V_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GBK2K-H_5.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GBK2K-V_5.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GBKp-EUC-H_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GBKp-EUC-V_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GBpc-EUC-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/GBpc-EUC-V_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/UniGB-UCS2-H_4.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/GB1/UniGB-UCS2-V_4.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/83pv-RKSJ-H_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/90ms-RKSJ-H_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/90ms-RKSJ-V_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/90msp-RKSJ-H_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/90msp-RKSJ-V_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/90pv-RKSJ-H_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/Add-RKSJ-H_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/Add-RKSJ-V_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/Adobe-Japan1-UCS2_4.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/cmaps_japan1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/EUC-H_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/EUC-V_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/Ext-RKSJ-H_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/Ext-RKSJ-V_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/H_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/UniJIS-UCS2-HW-H_4.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/UniJIS-UCS2-HW-V_4.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/UniJIS-UCS2-H_4.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/UniJIS-UCS2-V_4.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/UniJIS-UTF16-H_5.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/UniJIS-UTF16-V_5.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Japan1/V_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/Adobe-Korea1-UCS2_2.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/cmaps_korea1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/KSC-EUC-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/KSC-EUC-V_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/KSCms-UHC-HW-H_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/KSCms-UHC-HW-V_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/KSCms-UHC-H_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/KSCms-UHC-V_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/KSCpc-EUC-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/UniKS-UCS2-H_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/UniKS-UCS2-V_1.cpp
+    libsrc/core/src/fpdfapi/fpdf_cmaps/Korea1/UniKS-UTF16-H_0.cpp
+    libsrc/core/src/fpdfapi/fpdf_font/fpdf_font.cpp
+    libsrc/core/src/fpdfapi/fpdf_font/fpdf_font_charset.cpp
+    libsrc/core/src/fpdfapi/fpdf_font/fpdf_font_cid.cpp
+    libsrc/core/src/fpdfapi/fpdf_font/fpdf_font_utility.cpp
+    libsrc/core/src/fpdfapi/fpdf_font/ttgsubtable.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_colors.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_doc.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_func.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_graph_state.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_image.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_parser.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_parser_new.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_parser_old.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_path.cpp
+    libsrc/core/src/fpdfapi/fpdf_page/fpdf_page_pattern.cpp
+    libsrc/core/src/fpdfapi/fpdf_parser/fpdf_parser_decode.cpp
+    libsrc/core/src/fpdfapi/fpdf_parser/fpdf_parser_document.cpp
+    libsrc/core/src/fpdfapi/fpdf_parser/fpdf_parser_encrypt.cpp
+    libsrc/core/src/fpdfapi/fpdf_parser/fpdf_parser_fdf.cpp
+    libsrc/core/src/fpdfapi/fpdf_parser/fpdf_parser_filters.cpp
+    libsrc/core/src/fpdfapi/fpdf_parser/fpdf_parser_objects.cpp
+    libsrc/core/src/fpdfapi/fpdf_parser/fpdf_parser_parser.cpp
+    libsrc/core/src/fpdfapi/fpdf_parser/fpdf_parser_utility.cpp
+    libsrc/core/src/fpdfapi/fpdf_render/fpdf_render.cpp
+    libsrc/core/src/fpdfapi/fpdf_render/fpdf_render_cache.cpp
+    libsrc/core/src/fpdfapi/fpdf_render/fpdf_render_image.cpp
+    libsrc/core/src/fpdfapi/fpdf_render/fpdf_render_loadimage.cpp
+    libsrc/core/src/fpdfapi/fpdf_render/fpdf_render_pattern.cpp
+    libsrc/core/src/fpdfapi/fpdf_render/fpdf_render_text.cpp
+)
+tg_add_library_headers(fpdfapi
+    PUBLIC_HEADER
+    libsrc/core/include/fpdfapi/fpdfapi.h
+    libsrc/core/include/fpdfapi/fpdf_module.h
+    libsrc/core/include/fpdfapi/fpdf_objects.h
+    libsrc/core/include/fpdfapi/fpdf_page.h
+    libsrc/core/include/fpdfapi/fpdf_pageobj.h
+    libsrc/core/include/fpdfapi/fpdf_parser.h
+    libsrc/core/include/fpdfapi/fpdf_render.h
+    libsrc/core/include/fpdfapi/fpdf_resource.h
+    libsrc/core/include/fpdfapi/fpdf_serial.h
+    libsrc/core/src/fpdfapi/fpdf_cmaps/cmap_int.h
+    libsrc/core/src/fpdfapi/fpdf_edit/editint.h
+    libsrc/core/src/fpdfapi/fpdf_font/common.h
+    libsrc/core/src/fpdfapi/fpdf_font/font_int.h
+    libsrc/core/src/fpdfapi/fpdf_font/ttgsubtable.h
+    libsrc/core/src/fpdfapi/fpdf_page/pageint.h
+    libsrc/core/src/fpdfapi/fpdf_parser/filters_int.h
+    libsrc/core/src/fpdfapi/fpdf_render/render_int.h
+)
+
+# Turn off some warnings :)
+tg_set_cxx_flags_for_current_targets(-Wno-attributes)
+
+# Finalize the settings
+tg_process_all_targets()
